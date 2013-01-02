@@ -12,7 +12,7 @@
 \let\stdsection\section
 \renewcommand\section{\newpage\stdsection}
 
-\title{Ethernet in varnostni mehanizmi}
+\title{Sistemi za detekcijo napadov}
 \author{Domen Kožar, Andraž Brodnik}
 \begin{document}
 
@@ -52,7 +52,7 @@ zato nastavljajmo IDS in IPS sisteme odgovorno, podatke pa shranjujmo z najvecjo
 
 \subsection{Pregled tipov sistemov}
  
-\subsubsection{MAC Flooding (Cam table overflow)}
+\subsubsection{IDS}
 
 \begin{figure}[htb]
 \begin{center}
@@ -62,84 +62,37 @@ zato nastavljajmo IDS in IPS sisteme odgovorno, podatke pa shranjujmo z najvecjo
 \label{mac_flooding}
 \end{figure}
 
-CAM Flooding je napad, s katerim se izkorišča omejitev velikosti prostora v pomnilku CAM tabele. CAM tabele shranjujo informacijo o MAC naslovih. Napadalec zasiči stikalo z množico slepih MAC naslovov, dokler se CAM tabela ne zapolni. Ko se to zgodi, stikalo pošlje prihajajoče podatke vsem portom, ker več ne najde portu določenega MAC naslova v CAM tabeli.  
+Sistemi za detekcijo napadov (intrusion detection system), krajse IDS.
+So sistemi, katera naloga je analizirati podatke na omrezju ali sistemu samem
+ter zaznati poskuse udora ali pa udor sam.
 
+Naj omenimo, da so tej sistemi namenjeni ponudnikom storitev (podjetjem, institucijam, posameznikom) v vecini niso namenjeni omreznim operaterjem, razen ce zelimo preprecevati napade na nase omrezne elemente. 
+Ne moremo pa vsiliti pravil za vse nase uporabnike. Vcasih pa je tega prometa za analizo prevec, a vendar so se casi spremenili in to ni glavna omejitev.
 
-\subsubsection{VLAN Hopping}
-
-\begin{figure}[htb]
-\begin{center}
-\includegraphics[scale=0.8]{vlan_hopping_attack.png}
-\end{center}
-\caption{Vlan hopping (double tagging) napad}
-\label{vlan_hopping}
-\end{figure}
-
-VLAN Hopping je napad, s katerim končni uporabnik pošilja paketke namenjene za sistem v drugem VLAN omrežju, ki ne sme biti normalo dostopen končnemu sistemu. Promet je označen z drugačnim VLAN ID-jem kot tistemu, kateremu končni sistem pripada. Lahko tudi napadalec poskuša obnašati kot stikalo, tako da lahko spremlja prenos med drugimi VLANi.
-\begin{itemize}
-    \item Switch spoofing – napadalec nastavi sistem, ki se obnaša kot stikalo. Tako mora posnemati ISL ali 802.1q skupaj z DTP. Napaden sistem postane del tega VLANa.
-    \item Double Tagging – označevanje prenešenih okvirjev z dvema 802.1q naslovoma z namenom posredovanja paketkov napačnemu VLANu. Prvo stikalo, ki prejme dvojno označen okvir, prvi 802.1q naslov izbriše in pošlje okvir naprej. Paketek je posredovan naprej z drugim 802.1q naslovom vsem portom v stikalu vključno s trunk porti v VLANu napadalca. Drugo stikalo potem posreduje paket na destinacijo zapisano v 802.1q naslovu.
-\end{itemize}
-
-
-\subsubsection{STP Manipulation}
-Spanning-Tree Protocol se uporablja v omrežjih s stikali za preprečitev nastanka mostičnih zank. Z napadom na STP protokol skuša napadalec prikazati njegov sistem kot »root bridge«. To naredi tako, da oddaja STP Bridge Protocol Data Units (BPDUs). BDPU-ji poslani z napadalčevga sistema sporočajo, da ima napaden sistem nižjo mostično prioriteto. Po uspešno izvedenem postopku lahko napadalec prestreže prenos.
-
-
-\subsubsection{MAC Spoofing}
-
-\begin{figure}[htb]
-\begin{center}
-\includegraphics[scale=0.8]{MAC_Spoofing.JPG}
-\end{center}
-\caption{MAC spoofing napad}
-\label{mac_spoofing}
-\end{figure}
-
-MAC Spoofing napadi vključujejo uporabo znanega MAC naslova nekega hosta s poskusom omogočiti preko ciljnega stikala posredovanje okvirjev napadalcu, ki so bili namenjeni oddaljenemu hostu. S pošiljanjem enega okvirja z Ethernet naslovom drugega hosta, napadalec prepiše vsebino CAM tabele, tako stikalo posreduje napadalcu paketke, ki so bili namenjeni hostu. Dokler host oddaja promet, ne bo prejel nobenega prometa. Ko host preneha s pošiljanjem, se vsebina CAM tabele prepiše še enkrat, tako se premakne nazaj na originalni port.
-
-
-\subsection{Varnostni mehanizmi}
-
-\subsubsection{Port security}
-
-Je zaščita, s katero omejimo število MAC naslovov povezanih na določen port ali pa na port omejimo določene MAC naslove. Če komunicira prevelika količina MAC naslovov ali skozi port, ali stikalo zazna napačni MAC naslov, MAC naslov blokira ali port izključi.
-
-Možnost nastavitev:
+Delimo jih na dve glavni skupini:
 
 \begin{itemize}
-    \item števila MAC naslovov na port
-    \item določenih MAC naslovov na port
-    \item časovne omejitve povezanega MAC naslova 
+    \item - NIDS (network intrusion detection system)
+    \item - HIDS (host intrusion detection system)
 \end{itemize}
 
-Omogoča zaščito pred MAC napadi in DHCP Starvation napadi.
+\subsubsection{NIDS}
+
+Sistemi, katerim je glavni vir podatkov za analizo omrezje samo se imenujejo NIDS sistemi (network intrusion detection system).
+
+Bralcu bo po vsej verjetnosti poznan program WireShark ali pa tcpdump.
+NIDS ponavadi delujejo podobno kot zgoraj omenjena programa, zajema vse paketke, ki jih vidi na omreznem vmesniku, nato jih premerja z pravili v svoji bazi, sumljive pakete ali niz paketov pa zabelezi ali pa si ustrezno napise informacije o njih.
+Sistemi se ponavadi zavedajo tudi prejsnih paketov, spremljajo transportni protokol. Torej je v njih kar nekaj logicnih avtomatov z pomnilnikom in razlicnimi stanji.
+
+\subsubsection{Primeri napadov}
 
 
-\subsubsection{IEEE 802.1x}
- 
-\begin{figure}[htb]
-\begin{center}
-\includegraphics[scale=0.8]{8021X_wired_protocols.png}
-\end{center}
-\caption{802.1x potek zahtevka od klienta do radius strežnika}
-\label{802.1x}
-\end{figure}
+\subsubsection{HIDS}
 
-Avtentikacijski standard IEEE 802.1x določa nadzorovan dostop do omrežja zasnovan na ravni vrat (port) pri izpolnjenih pogojih – temelji na mehanizmu nadzorovanega porta ter filtriranju MAC naslovov.
-Overjanje uporabnikov se izvaja s protokolom EAP (brezžično) oz. EAPoL (ožičeno omrežje). Protokol IEEE 802.1x skrbi za prenos avtentikacijskih EAP (Extensible Authentication Protocol) sporočil med odjemalcem in overiteljem, ter določa standardizirano metodo ovijanja EAP sporočil v ethernet okvirje EAPoL. Prenos EAP sporočil  med overiteljem in avtentikacijskim strežnikom poteka po protokolu RADIUS.
+\subsubsection{IPS}
+\subsubsection{NIPS}
+\subsubsection{HIPS}
 
-Gradniki pri 802.1x so:
-
-\begin{itemize}
-    \item Overitelj (stikalo)
-    \item Odjemalec
-    \item Avtentikacijski strežnik  
-    \item Nadzorovan/nenadzorovan port
-\end{itemize}
- 
-Princip delovanja 802.1x omejevanje dostopa do omrežja, tako da overitelj omogoči odjemalcu dostop do omrežja šele po odobreni avtentikaciji pri avtentikacijskem strežniku. 
-\\*
 \\* \indent
 \textbf{Overitelj (authenticator)} deluje kot posrednik v komunikaciji med odjemalcem in avtentikacijskim strežnikom. Nadzira fizični dostop do omrežja glede na podatke avtentikacije odjemalca. Uporabnikom katerim želijo dostopati, do omrežja vsiljuje predhodno overjanje. Podatke prenese avtentikacijskemu strežniku in reagira glede na odziv strežnika (port odpre verificiranemu odjemalcu). V žičnem ethernet omrežju je to fizičen port na stikalu, na brezžičnem ethernet omrežju pa je overitelj logičen LAN port na brezžični dostopovni točki.
 \\*
