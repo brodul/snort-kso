@@ -13,7 +13,7 @@
 \renewcommand\section{\newpage\stdsection}
 
 \title{Ethernet in varnostni mehanizmi}
-\author{Klemen Rupnik, Domen Kožar}
+\author{Domen Kožar, Andraž Brodnik}
 \begin{document}
 
 \maketitle
@@ -21,26 +21,36 @@
 \tableofcontents
 
 \section{Povzetek}
-Teoretični del zajema opise napadov na Ethernet nivoju ter dva varnostna mehanizma.
+Teoretični del zajema razlago sistemov za detekcijo napadov (IDS) in preprečevanje napadov (IPS) 
+ter njihove podskupine. 
+Osredotočili se bomo na sisteme, ki opazujejo ves promet na omrežnem vmesniku (NIDS/NIPS).
 \\*
 \\*
-V praktičnem delu je izvedba varnostnih mehanizmov 802.1x in port security ter testiranje njihovega namena.
+V praktičnem delu pa smo namestili in nastavili sistem Snort.
 
 \section{Uvod}
 
-Namen seminarske naloge se je seznaniti z različnimi varnostnimi mehanizmi in protokoli v Ethernet-u. Kakšni napadi obstajajo, kaj so priporočljive obrambe.
+Namen seminarske naloge se je seznaniti z sistemi za zaznavanje vdorov ter sistemi za preprečevanje vdorov. 
+Kako sestaviti osnovno politiko (policy) za taksistem, kakšne napade lahko detektiramo ter so priporočljivi obrambni mehanizmi.
 \\*
 \\*
-Ethernet deluje na 1 (fizičnem) in delno na 2 (data) nivoju. Tako mnogokrat administratorji omrežja niso seznanjeni z napadi in varnostjo na nižjih nivojih, kljub temu, da lahko tam napadalec naredi najvec škode oz. pridobi dostop do prometa. 
+Dandanes se srecujemo z novicami o nepoblascenih vdorih v informacijske sisteme. Taksni vdori lahko unicijo podjetje, kar pomeni, da je racionalno investirati nekaj tehnicnih ur v postavitev sistema, ki bi (ni pa nujno) taksen vdor preprecil ali pa zaznal poskus vdora.
+Ce pa je prepozno pa vsaj omili posledice. To nam lahko koristi,
+da vidimo na kaksen nacin je napadalec napadel nas sistem, ter kaj je storil. 
 \\*
 \\*
-Privzeto so omrežna stikala nastavljena brez varnostnih mehanizmnov, zato so poznavanje, samoiniciativa in paranoja zelo pomembni pri zasnovanju računalniških omrežij.
-
-Orodja za napade predvsem na 2. nivoju sta yersenia \cite{yersenia} in dsniff \cite{dsniff}.
+Kljub temu, da je nasa varnostna politika popolna (menjava gesel, dvonivojska avtentikacija v sisteme, pozarni zidovi, varne aplikacije, tuneliranje prometa, utrjeni strezniki), ne smemo biti prevec zadovoljni z sami sabo ter postavit se sistem za detekcijo in/ali preprecevanje napadov.
+Taksno razmislanje nam koristi tudi, pri razvoju aplikacij, zato pisimo teste, saj noben ni popoln.
+\\*
+\\*
+Naj bralca opozorimo tudi na zakonodajo, `nepravilno' konfigurirani IDS ali IPS sistemi lahko globoko posezejo
+tudi v zasebnost posameznika, kar ni v skladu z ustavo Republike Slovenije in drugimi pravnimi akti.
+IDS in IPS sistemi se lahko uporabljajo tudi DPI (deep packet inspection), kar pomeni, da ne gledamo samo glav paketnih protokolov ampak tudi aplikacijski nivo (aplikacijski protokol ali vsebino), 
+zato nastavljajmo IDS in IPS sisteme odgovorno, podatke pa shranjujmo z najvecjo skrbjo.
 
 \section{Teoretični del}
 
-\subsection{Pregled napadov}
+\subsection{Pregled tipov sistemov}
  
 \subsubsection{MAC Flooding (Cam table overflow)}
 
