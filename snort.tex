@@ -23,30 +23,31 @@
 \section{Povzetek}
 Teoretični del zajema razlago sistemov za detekcijo napadov (IDS) in preprečevanje napadov (IPS) 
 ter njihove podskupine. 
-Osredotočili se bomo na sisteme, ki opazujejo ves promet na omrežnem vmesniku (NIDS/NIPS).
+Osredotočili se bomo na sisteme, ki opazujejo promet na omrežnem vmesniku (NIDS/NIPS).
 \\*
 \\*
 V praktičnem delu pa smo namestili in nastavili sistem Snort.
 
 \section{Uvod}
 
-Namen seminarske naloge se je seznaniti z sistemi za zaznavanje vdorov ter sistemi za preprečevanje vdorov. 
-Kako sestaviti osnovno politiko (policy) za taksistem, kakšne napade lahko detektiramo ter so priporočljivi obrambni mehanizmi.
+Namen seminarske naloge se je seznaniti s sistemi za zaznavanje vdorov ter s sistemi za preprečevanje vdorov. 
+Kako sestaviti osnovno politiko (policy) za tak sistem, kakšne napade lahko detektiramo, ter priporočljive obrambne mehanizme.
 \\*
 \\*
-Dandanes se srecujemo z novicami o nepoblascenih vdorih v informacijske sisteme. Taksni vdori lahko unicijo podjetje, kar pomeni, da je racionalno investirati nekaj tehnicnih ur v postavitev sistema, ki bi (ni pa nujno) taksen vdor preprecil ali pa zaznal poskus vdora.
-Ce pa je prepozno pa vsaj omili posledice. To nam lahko koristi,
-da vidimo na kaksen nacin je napadalec napadel nas sistem, ter kaj je storil. 
+Dandanes se srecujemo z novicami o nepoblaščenih vdorih v informacijske sisteme. Taksni vdori lahko uničijo podjetje ali zasebnost uporabnikov,
+kar pomeni, da je racionalno investirati nekaj tehničnih ur v postavitev sistema, ki bi lahko (ni pa nujno) taksen vdor preprečil ali pa zaznal poskus vdora.
+To nam koristi, da vidimo na kaksen način je napadalec napadel naš sistem, ter kaj je storil. 
 \\*
 \\*
-Kljub temu, da je nasa varnostna politika popolna (menjava gesel, dvonivojska avtentikacija v sisteme, pozarni zidovi, varne aplikacije, tuneliranje prometa, utrjeni strezniki), ne smemo biti prevec zadovoljni z sami sabo ter postavit se sistem za detekcijo in/ali preprecevanje napadov.
-Taksno razmislanje nam koristi tudi, pri razvoju aplikacij, zato pisimo teste, saj noben ni popoln.
+Kljub temu, da je naša varnostna politika v skladu z dobro prakso (menjava gesel, dvonivojska avtentikacija, požarni zidovi,
+varne aplikacije, tuneliranje prometa, up-to-date strežniki), ne smemo biti preveč zadovoljni s sami sabo ter moramo postavit tudi sistem za detekcijo in/ali preprecevanje napadov.
 \\*
 \\*
-Naj bralca opozorimo tudi na zakonodajo, `nepravilno' konfigurirani IDS ali IPS sistemi lahko globoko posezejo
+Naj bralca opozorimo tudi na dejstvo, da `nepravilno' konfiguriran IDS ali IPS sistemi lahko globoko posežejo
 tudi v zasebnost posameznika, kar ni v skladu z ustavo Republike Slovenije in drugimi pravnimi akti.
-IDS in IPS sistemi se lahko uporabljajo tudi DPI (deep packet inspection), kar pomeni, da ne gledamo samo glav paketnih protokolov ampak tudi aplikacijski nivo (aplikacijski protokol ali vsebino), 
-zato nastavljajmo IDS in IPS sisteme odgovorno, podatke pa shranjujmo z najvecjo skrbjo.
+IDS in IPS sistemi se lahko uporabljajo tudi kot DPI (deep packet inspection) sistemi, kar pomeni, da ne gledamo
+samo glav paketnih protokolov ampak tudi aplikacijski nivo (aplikacijski protokol oz. vsebino), 
+zato nastavljajmo IDS in IPS sisteme odgovorno, podatke pa shranjujmo z največjo skrbjo.
 
 \section{Teoretični del}
 
@@ -62,12 +63,14 @@ zato nastavljajmo IDS in IPS sisteme odgovorno, podatke pa shranjujmo z najvecjo
 \label{mac_flooding}
 \end{figure}
 
-Sistemi za detekcijo napadov (intrusion detection system), krajse IDS.
-So sistemi, katera naloga je analizirati podatke na omrezju ali sistemu samem
-ter zaznati poskuse udora ali pa udor sam.
+Sistemi za detekcijo napadov (intrusion detection system), krajše IDS
+so sistemi, katera naloga je analizirati podatke na omrezju ali sistemu samem
+ter zaznati poskuse vdora ali pa vdor sam.
 
-Naj omenimo, da so tej sistemi namenjeni ponudnikom storitev (podjetjem, institucijam, posameznikom) v vecini niso namenjeni omreznim operaterjem, razen ce zelimo preprecevati napade na nase omrezne elemente. 
-Ne moremo pa vsiliti pravil za vse nase uporabnike. Vcasih pa je tega prometa za analizo prevec, a vendar so se casi spremenili in to ni glavna omejitev.
+Naj omenimo, da so tej sistemi namenjeni ponudnikom storitev (podjetjem, inštitucijam, posameznikom)
+v večini niso namenjeni omrežnim operaterjem, razen če želimo preprečevati napade na naše omrežne elemente. 
+Ne moremo pa vsiljevati pravil za vse naše uporabnike. Včasih pa je bilo tega prometa za analizo preveč, a vendar
+so se časi spremenili in to ni več glavna omejitev.
 
 Delimo jih na dve glavni skupini:
 
@@ -78,518 +81,42 @@ Delimo jih na dve glavni skupini:
 
 \subsubsection{NIDS}
 
-Sistemi, katerim je glavni vir podatkov za analizo omrezje samo se imenujejo NIDS sistemi (network intrusion detection system).
+Sistemi, katerim je glavni vir podatkov za analizo izključno omrežje se imenujejo NIDS sistemi (network intrusion detection system).
 
 Bralcu bo po vsej verjetnosti poznan program WireShark ali pa tcpdump.
-NIDS ponavadi delujejo podobno kot zgoraj omenjena programa, zajema vse paketke, ki jih vidi na omreznem vmesniku, nato jih premerja z pravili v svoji bazi, sumljive pakete ali niz paketov pa zabelezi ali pa si ustrezno napise informacije o njih.
-Sistemi se ponavadi zavedajo tudi prejsnih paketov, spremljajo transportni protokol. Torej je v njih kar nekaj logicnih avtomatov z pomnilnikom in razlicnimi stanji.
+NIDS ponavadi delujejo podobno kot zgoraj omenjena programa. Program zajema vse paketke, ki jih vidi na omrežnem vmesniku,
+nato jih premerja s pravili v svoji bazi, sumljive pakete ali niz paketov pa zabeleži ali pa si ustrezno napiše informacije o njih.
 
-\subsubsection{Primeri napadov}
-
+Sistemi se ponavadi zavedajo tudi prejšnih paketov, torej spremljajo transportni protokol.
 
 \subsubsection{HIDS}
-
 \subsubsection{IPS}
 \subsubsection{NIPS}
 \subsubsection{HIPS}
-
-\\* \indent
-\textbf{Overitelj (authenticator)} deluje kot posrednik v komunikaciji med odjemalcem in avtentikacijskim strežnikom. Nadzira fizični dostop do omrežja glede na podatke avtentikacije odjemalca. Uporabnikom katerim želijo dostopati, do omrežja vsiljuje predhodno overjanje. Podatke prenese avtentikacijskemu strežniku in reagira glede na odziv strežnika (port odpre verificiranemu odjemalcu). V žičnem ethernet omrežju je to fizičen port na stikalu, na brezžičnem ethernet omrežju pa je overitelj logičen LAN port na brezžični dostopovni točki.
-\\*
-\\* \indent
-\textbf{Odjemalec (supplicant)} je sistem, ki zahteva dostop do omrežja. Ta potrebuje software, ki podpira protokol IEEE 802.1x (windows 7, ubuntu, ... ali namensko programje).
-\\*
-\\* \indent
-\textbf{Avtentikacijski strežnik} overja poverilnice odjemalca, ki jih posreduje overitelj, nato odgovori overitelju ali je odjemalec avtoriziran za dostop do omrežja. Overitelj posreduje odjemalčevo zahtevo po overjanju do avtentikacijskega strežnika.
-\\*
-\\* \indent
-Omrežno stikalo pred uspešno avtentikacijo dovoljuje samo EAPOL promet, ki ga preusmeri v avtentikacijskemu strežniku.
-\\*
-\\*
-Postopek avtentikacije:
-
-\begin{figure}[htb]
-\begin{center}
-\includegraphics[scale=0.8]{8021x_exchange.jpg}
-\end{center}
-\caption{802.1x potek avtentikacije}
-\label{802.1x_exchange}
-\end{figure}
-
-\begin{enumerate}
-    \item Če se odjemalec pridruži žičnemu omrežju, prejme od stikala poziv za avtentikacijo – paket »EAP-Request/Identity«. V kolikor se odjemalec prridruži brezžični dostopovni točki, odjemalec sam prične s pošiljanjem paketa »EAP-Start« za avtentikacijo.
-    \item Odjemalec pošlje stikalu paket »EAP-Request/Identity«, ki vsebuje identiteto fizične naprave (računalnika), ta pa ga posreduje strežniku
-    \item RADIUS strežnik odgovori odjemalcu zahtevo po pridružitvi - RADIUS sporočilo »Access-Challenge«, ki vsebuje avtentikacijsko sporočilo »RADIUS EAP-Request«
-    \item Odjemalec odgovori na zahtevo po pridružitvi z »EAP-Response« s poverilnico. To sporočilo je odjemalčev pozdrav avtentikacijskemu strežniku. Overitelj posreduje EAP sporočilo do RADIUS strežnika v obliki »RADIUS Access-Request«
-    \item RADIUS odda sporočilo »Access-Challenge«, ki vsebuje sporočilo »EAP-Request« ter digitalni certifikat RADIUS strežnika. Overitelj nato posreduje to sporočilo do odjemalca
-    \item Odjemalec pošlje »EAP-Response« ter svoj digitalni certifikat. Overitelj posreduje sporočilo do RADIUS strežnika v obliki »RADIUS Access-Request«.
-    \item Radius pošlje »EAP-Request« ter šifrirni material.
-    \item Odjemalec pošlje strežniku »EAP-Response«. Overitelj nato posreduje sporočilo do RADIUS strežnika v obliki«RADIUS Access-Request«
-    \item RADIUS odgovori odjemalcu s sporočilom o uspešnosti vzpostavitve seje »EAP-Success«
-\end{enumerate}
-
-\subsubsection{Napadi na 802.1x}
-
-802.1x podpira različne variante EAP za avtentikacijo. Glede na tip protokola, so možni različni napadi:
-
-\begin{table}[h]\footnotesize
-    \caption{EAP nacini avtentikacije}
-    \label{eaptypes}
-    \begin{tabular}{ | p{3cm} | p{4cm} | p{2cm} | p{2cm} | p{2cm} | p{3cm} | }
-        \hline
-         & EAP-MD5 & LEAP & EAP-TLS & EAP-TTLS & PEAP \\
-        \hline
-        Server Authentication & None & Password Hash & Public Key (Certificate) & Public Key (Certificate) & Public Key (Certificate) \\
-        \hline
-        Supplicant Authentication & Password Hash & Password Hash & Public Key (Certificate or Smart Card) & CHAP, PAP, MS-CHAP(v2), EAP & Any EAP, like EAP-MS-CHAPv2 or Public Key \\
-        \hline
-        Dynamic Key Delivery & No & Yes & Yes & Yes & Yes \\
-        \hline
-        Security Risks & Identity exposed, Dictionary attack, Man-in-the-Middle (MitM) attack, Session hijacking & Identity exposed, Dictionary attack & Identity exposed & MitM attack & MitM attack; Identity hidden in Phase 2 but potential exposure in Phase 1 \\
-        \hline
-    \end{tabular}
-\end{table}
-
-
-Napad na 802.1x naj bi bil mogoč preko brezžičnega dostopa – Man in the Middle napad, izvršen na EAP avtentikacijo. Napadalec pošlje odjemalcu lažno »EAP-Success« sporočilo, tako da zgleda, kot da je poslano s strani overitelja. To sporočilo ne vsebuje celovitosti ohranjanja informacij? in tako povzroči, da se oba – overitelj in odjemalec postavita v overjeno stanje. To naj bi napadalcu omogočilo da se postavi vmes.
-\\*
-\\* \indent
-Druga ranljivost je napad na obstoječo sejo. Po tem ko se je odjemalec avtenticiral pri avtentikacijskem serverju, se overitelj in klient postavita v overjeno stanje. Takrat lahko napadalec pošlje odjemalcu lažni ločitveni ovkir z MAC naslovom overitelja. Odjemalca tako loči od omrežja, ter pusti overitelja v povezanem stanju. Napadalec dobi dostop do omrežja z zbiranjem sistemskih MAC naslovov z naslovom pravkar ločenega sistema.
-\\*
-\\* \indent
-Orodje za izvajanje napadov na 802.1x preko kabla se imenuje Marvin \footnote{http://www.gremwell.com/marvin-mitm-tapping-dot1x-links}
-
-\subsubsection{IEEE 802.1x in port security}
-
-Možna je nastavitev port security-ja na portu z IEEE 802.1x. Ko omogočimo port security in IEEE 802.1x avtentikacijo na portu, 802.1x avtenticira port, port security pa nadzira omrežni dostop za vse MAC naslove. Nastavimo lahko število klientov, ki imajo dostop do omrežja preko IEEE 802.1x porta.
-\\*
-\\* \indent
-802.1x že sam po sebi lahko vodi evidenco in število prijavljenih MAC naslovov. Administrator lahko tako izbira kje (ali na 802.1x avtentikacijskem strezniku ali pa z port-security na portu samem) bo poskrbel za obrambo pred tovrstnimi napadi.
+\subsubsection{Primeri napadov}
 
 
 \section{Praktični del}
 
-\subsection{802.1x}
-
-\subsubsection{Nastavitev Cisco Catalyst 2960 omrežnega stikala}
-
-V laboratoriju sva dobila v roke omrežno stikalo \textbf{Cisco Catalyst 2960}. Naprava je imela privzete tovarniške nastavitve, tako sva jo preko konzole oz. serijskega porta priklopila na PC. Na Ubuntu 10.10 sistemu sva namestila \textbf{minicom} program in ga uporabila za komunikacijo z omrežnim stikalom:
-
-\begin{verbatim}
-sudo apt-get install minicom
-minicom -s
-\end{verbatim}
-
-Potrebno je bilo nastaviti minicom na pravilno pot \emph{/dev/ttyS0} in ze sva bila v terminalu. Prvi korak je bila uspesna postavitev DHCP strežnika, čeprav nisva bila prepričana, če stikalo to sploh podpira (saj je to naloga 3. nivoja). Še preden sva lahko nastavila karkoli, je bilo potrebno vzdigniti privilegije in preiti v tako imenovani administratorski nivo:
-
-\begin{verbatim}
-enable
-\end{verbatim}
-
-Nato sva nastavila in pognala dhcp strežnik na omrežju \emph{10.1.1.0} z masko \emph{/24} ter privzetim usmerjevalnikom \emph{10.1.1.1}:
-
-\begin{verbatim}
-configure terminal
-ip dhcp pool pool1
-network 10.1.1.0 255.255.255.0
-default-router 10.1.1.1
-exit
-service dhcp
-\end{verbatim}
-
-Zanimivo je bilo odkriti, da je potrebno nastaviti IP naslov vlan interface-u, tako da se obnaša kot nekakšen usmerjevalnik (za mangement):
-
-\begin{verbatim}
-interface vlan 1
-ip address 10.1.1.1 255.255.255.0
-\end{verbatim}
-
-Naslednji ukaz vklopi vlan 1 interface, kar pomeni da je sedaj omogočen:
-
-\begin{verbatim}
-no shutdown
-\end{verbatim}
-
-Naslednji ukaz nastavi spremembe na omrežnem stikalu in cez par sekund sva priklopila laptop, ki je dobil IP 10.1.1.2 preko DHCP-ja:
-
-\begin{verbatim}
-end
-\end{verbatim}
-
-Naslednji korak je nastavitev 802.1x protokla in namestitev podatkov za FreeRadius strežnik.
-
-Vklopimo "aaa" funkcionalnost:
-
-\begin{verbatim}
-configure terminal
-aaa new-model
-\end{verbatim}
-
-Nastavive parametrov za radius strežnik je potrebno spraviti v skupino, v kateri je lahko več kot eden strežnik zaradi redundančnosti:
-
-\begin{verbatim}
-radius-server host 10.1.1.2 auth-port 1812 acct-port 1813 key testing123
-aaa group server radius radius1
-server 10.1.1.2 acct-port 1813 auth-port 1812
-exit
-\end{verbatim}
-
-Zelo pomembno je nastaviti \emph{source-interface} na interface-u, torej informacija radius strežniku od kod prihajajo zahtevki. Freeradius strežnik na podlagi IP naslova izbere pravilne nastavitve in preveri vnesene podatke uporabnika. V našem primeru se uporabi vlan1 interface:
-
-"testing123" je geslo, ki si ga delita NAS ter Radius strežnik za enkripcijo izmenjave podatkov.
-
-\begin{verbatim}
-ip radius source-interface vlan1
-\end{verbatim}
-
-Povežemo še 802.1x autentikacijo z radius skupino, ki smo jo ustvarili in omogocimo 802.1x na omrežnem stikalu:
-
-\begin{verbatim}
-aaa authentication dot1x default group radius group radius1
-dot1x system-auth-control
-\end{verbatim}
-
-Še kot zadnji korak je potrebno omogočiti \emph{port-based security} na samih fizičnih portih, in sicer tokrat samo na mestih od 5 do 10. Pravtako je potrebno nastaviti porte na \emph{accces mode}, torej ne podpirajo \emph{trunking} načina:
-
-\begin{verbatim}
-interface range FastEthernet0/5-10
-switchport mode access
-dot1x port-control auto
-end
-\end{verbatim}
-
-Z naslednjim ukazom prikažemo trenutne nastavitve stikala in jih nato prenesemo v boot nastavitve:
-
-\begin{verbatim}
-show running-config
-copy running-config startup-config
-\end{verbatim}
-
-\subsubsection{Nastavitev FreeRadius strežnika na Ubuntu 11.04 laptop}
-
-Na enega iz klientov omrežnega stikala sva namestila FreeRadius strenižnik z naslednim ukazom:
-
-\begin{verbatim}
-sudo apt-get install freeradius
-\end{verbatim}
-
-V datoteko /etc/freeradius/client.conf vključimo:
-
-\begin{verbatim}
-client 10.1.1.0/24 {
-        ipaddr = 10.1.1.1
-        secret  = testing123
-        shortname = *
-        require_message_authenticator = no
-        nastype = other
-}
-\end{verbatim}
-
-Datoteka \emph{client} dovoli omrežnemu stikalu z IP-jem 10.1.1.1 možnost avtentikacije.
-
-V datoteko /etc/freeradius/users vključimo:
-
-\begin{verbatim}
-foobar  Cleartext-Password := "test"
-        Service-Type = NAS-Prompt-User
-\end{verbatim}
-
-Datoteka \emph{users} je podatkovna baza dovoljenih uporabnikov, v našem primeru smo dovolili dostop uporabniku \emph{foobar} z geslom \emph{test}.  
-
-Po vnosu novih parametrov je potrebno strežniku še sporočiti, naj jih na novo naloži:
-
-\begin{verbatim}
-sudo /etc/init.d/freeradius reload
-\end{verbatim}
-
-\subsubsection{Nastavitev Ubuntu 10.10 klienta}
-
-Ugotovila sva, da v Ubuntu 10.10 orodje za upravljanje z omrežnimi povezavami (Network Manager 8.1) avtomatsko ne prepozna 802.1x protokola, kar sva tudi prijavila \cite{ubuntubug} na Ubuntu bug tracker.
-
-Tako sva ročno za dano povezavo vnesila podatke:
-
-\begin{itemize}
-  \item Use 802.1x security
-  \item Authentication: Protected EAP (PEAP)
-  \item PEAP version: Automatic
-  \item Inner Authentication: MSCHAPv2
-  \item Username: foobar
-  \item Password: test
-\end{itemize}
-
-\subsubsection{Testiranje protokola}
-
-Testiranje sva izvaja sproti, ker sva omrežje postavljala prvic, nama je to dalo povratno informacijo kje se trenutno zatakne.
-
-Že pred uporabo laboratorija sva doma postavila FreeRadius strežnik in ga potestirala s pomočjo ukaza radtest, katerega parametri so naslednji:
-\begin{verbatim}
-# radtest <uporabniško ime> <geslo> <naslov strežnika> <port izvora zahtevka> <geslo med NAS-om in Radius strežnikom>
-\end{verbatim}
-
-Po uspešni authentikaciji dobimo naslednji odgovor:
-
-\begin{verbatim}
-root@kaki:~# radtest foobar test localhost 1813 testing123
-Sending Access-Request of id 50 to 127.0.0.1 port 1812
-        User-Name = "test"
-        User-Password = "test"
-        NAS-IP-Address = 127.0.1.1
-        NAS-Port = 1813
-rad_recv: Access-Accept packet from host 127.0.0.1 port 1812, id=50, length=26
-        Service-Type = NAS-Prompt-User
-\end{verbatim}
-
-Sedaj sva imela delujoč Radius strežnik. Vklopila sva najvecji nivo izposovanja podatkov v loge, zato da sva lahko spremljala nadaljne zahtevke, ki bodo prihajali iz omrežnega stikala.
-
-Precej težav nama je povzročal FreeRadius, saj je zavračal zahtevke omrežnega stikala. Kasneje sva dognala, da je potrebno določit "source-interface" parameter, da omrežno stikalo lahko pove iz kategera omrežja je prišel zahtevek.
-
-Pri nastavljanju klienta je bilo kar nekaj težav glede podprtih protokolov za avtentikacijo. Po nekaj branja in probavanja sva izbrala najlažje, torej tiste z čimmanj komplikacij (zelo običajno se postavi Radius strežnik v proxy način, tako da glede na domeno pošilja zahtevke naprej drugim Radius strežnikom).
-
-Nazadnje uspešna avtentikacija izgleda v logih Radius strežnika takole:
-
-\begin{verbatim}
-Thread 1 got semaphore
-Thread 1 handling request 8, (2 handled so far)
-[<thread>] # Executing section authorize from file /etc/freeradius/sites-enabled/default
-[<thread>] +- entering group authorize {...}
-++[preprocess] returns ok
-++[chap] returns noop
-++[mschap] returns noop
-++[digest] returns noop
-[suffix] No '@' in User-Name = "test", looking up realm NULL
-[suffix] No such realm "NULL"
-++[suffix] returns noop
-[eap] EAP packet type response id 8 length 80
-[eap] Continuing tunnel setup.
-++[eap] returns ok
-Found Auth-Type = EAP
-# Executing group from file /etc/freeradius/sites-enabled/default
-+- entering group authenticate {...}
-[eap] Request found, released from the list
-[eap] EAP/peap
-[eap] processing type peap
-[peap] processing EAP-TLS
-[peap] eaptls_verify returned 7 
-[peap] Done initial handshake
-[peap] eaptls_process returned 7 
-[peap] EAPTLS_OK
-[peap] Session established.  Decoding tunneled attributes.
-[peap] Peap state phase2
-[peap] EAP type mschapv2
-  PEAP: Setting User-Name to test
-# Executing section authorize from file /etc/freeradius/sites-enabled/inner-tunnel
-+- entering group authorize {...}
-++[chap] returns noop
-++[mschap] returns noop
-[suffix] No '@' in User-Name = "test", looking up realm NULL
-[suffix] No such realm "NULL"
-++[suffix] returns noop
-++[control] returns noop
-[eap] EAP packet type response id 8 length 6
-[eap] No EAP Start, assuming it's an on-going EAP conversation
-++[eap] returns updated
-[files] users: Matched entry test at line 205
-++[files] returns ok
-++[expiration] returns noop
-++[logintime] returns noop
-[pap] WARNING: Auth-Type already set.  Not setting to PAP
-++[pap] returns noop
-Found Auth-Type = EAP
-# Executing group from file /etc/freeradius/sites-enabled/inner-tunnel
-+- entering group authenticate {...}
-[eap] Request found, released from the list
-[eap] EAP/mschapv2
-[eap] processing type mschapv2
-[eap] Freeing handler
-++[eap] returns ok
-Login OK: [test/<via Auth-Type = EAP>] (from client * port 0 via TLS tunnel)
-  WARNING: Empty post-auth section.  Using default return values.
-# Executing section post-auth from file /etc/freeradius/sites-enabled/inner-tunnel
-[peap] Tunneled authentication was successful.
-[peap] SUCCESS
-++[eap] returns handled
-Finished request 8.
-\end{verbatim}
-
-Jedrnat povzetek dogajanja:
-
-\begin{itemize}
-  \item strežnik dobi zahtevek in ga začne obdelovati
-  \item pogleda za katero vrsto avtentikacije gre in jo izvede
-  \item vzpostavi TLS varno povezavo
-  \item znotraj varnega tunela preveri ujemanje uporabniškega imena in gesla ter vrne OK
-\end{itemize}
-
-Log Radius strežnika ob napačnem geslu:
-
-\begin{verbatim}
-Thread 5 handling request 17, (4 handled so far)
-[<thread>] # Executing section authorize from file /etc/freeradius/sites-enabled/default
-[<thread>] +- entering group authorize {...}
-++[preprocess] returns ok
-++[chap] returns noop
-++[mschap] returns noop
-++[digest] returns noop
-[suffix] No '@' in User-Name = "test", looking up realm NULL
-[suffix] No such realm "NULL"
-++[suffix] returns noop
-[eap] EAP packet type response id 17 length 144
-[eap] Continuing tunnel setup.
-++[eap] returns ok
-Found Auth-Type = EAP
-# Executing group from file /etc/freeradius/sites-enabled/default
-+- entering group authenticate {...}
-[eap] Request found, released from the list
-[eap] EAP/peap
-[eap] processing type peap
-[peap] processing EAP-TLS
-[peap] eaptls_verify returned 7 
-[peap] Done initial handshake
-[peap] eaptls_process returned 7 
-[peap] EAPTLS_OK
-[peap] Session established.  Decoding tunneled attributes.
-[peap] Peap state phase2
-[peap] EAP type mschapv2
-  PEAP: Setting User-Name to test
-# Executing section authorize from file /etc/freeradius/sites-enabled/inner-tunnel
-+- entering group authorize {...}
-++[chap] returns noop
-++[mschap] returns noop
-[suffix] No '@' in User-Name = "test", looking up realm NULL
-[suffix] No such realm "NULL"
-++[suffix] returns noop
-++[control] returns noop
-[eap] EAP packet type response id 17 length 63
-[eap] No EAP Start, assuming it's an on-going EAP conversation
-++[eap] returns updated
-[files] users: Matched entry test at line 205
-++[files] returns ok
-++[expiration] returns noop
-++[logintime] returns noop
-[pap] WARNING: Auth-Type already set.  Not setting to PAP
-++[pap] returns noop
-Found Auth-Type = EAP
-# Executing group from file /etc/freeradius/sites-enabled/inner-tunnel
-+- entering group authenticate {...}
-[eap] Request found, released from the list
-[eap] EAP/mschapv2
-[eap] processing type mschapv2
-[mschapv2] # Executing group from file /etc/freeradius/sites-enabled/inner-tunnel
-[mschapv2] +- entering group MS-CHAP {...}
-[mschap] Creating challenge hash with username: test
-[mschap] Told to do MS-CHAPv2 for test with NT-Password
-[mschap] FAILED: MS-CHAP2-Response is incorrect
-++[mschap] returns reject
-[eap] Freeing handler
-++[eap] returns reject
-Failed to authenticate the user.
-Login incorrect: [test/<via Auth-Type = EAP>] (from client * port 0 via TLS tunnel)
-[peap] Tunneled authentication was rejected.
-[peap] FAILURE
-++[eap] returns handled
-Finished request 17.
-\end{verbatim}
-
-Na koncu klient za pinga nek drug client na omrežnem stikalu, da potrdimo vzpostavljeno povezavo.
-
-
-\subsection{Port security}
-
-\subsubsection{Nastavitev Cisco Catalyst 2960 omrežnega stikala}
-
-Podpore za 802.1x vključno z port security na najinem omrežnem stikalu ni blo, saj je podprta šele v višjih verzijah operacijskega sistema (to nazorno piše v navodilih in pravtako sva sama preizkusila). Včasih kombinacija ni bila podprta, saj 802.1x protokol lahko sam izvaja nadzor nad številom MAC naslovov glede na port. Zato sva pretestirala protokol ločeno in nastavila stikalo:
-
-\begin{verbatim}
-configure terminal
-interface FastEthernet0/2
-switchport port-security
-switchport port-security maximum 1
-switchport port-security violation shutdown
-\end{verbatim}
-
-Nastavila sva vse skupaj na stikalu 2, z maksimalno enim MAC naslovom in povedala stikalu naj ga izklopi v primeru prekoračitve dovoljenega števila.
-
-\subsubsection{Testiranje protokola}
-
-Namestitev programa na Ubuntu 10.10 za izvajanje MAC flooding napada je zelo enostavna, kakor je tudi poganjanje le-tega:
- 
-\begin{verbatim}
-sudo apt-get install dsniff
-sudo macof -i eth0
-\end{verbatim}
-
-To pomeni, da čez interface eth0 pošilja ogromno lažnih paketkov, ki napolnijo MAC tabelo omrežnega stikala. Ko je bil port na omrežnem stikalu zaščiten in nastavljen z port security, sva na konzoli opazila naslednje opozorilo in port se je izklopil:
-
-\begin{verbatim}
-01:12:45: %PM-4-ERR_DISABLE: psecure-violation error detected on Fa0/2, putting Fa0/2 in err-disable state
-01:12:45: %PORT_SECURITY-2-PSECURE_VIOLATION: Security violation occurred, caused by MAC address 366a.9612.1045 on p.
-01:12:46: %LINEPROTO-5-UPDOWN: Line protocol on Interface FastEthernet0/2, changed state to down
-01:12:47: %LINK-3-UPDOWN: Interface FastEthernet0/2, changed state to down
-\end{verbatim}
-
-To dokazuje uspešno obrambo pred napadom na 2. nivoju.
+\subsection{Nameščanje programske opreme Snort}
+\subsection{Zmožnosti Snort programja}
+\subsection{Spletni vmesnik za Snort}
+\subsection{Praktični primeri napadov}
 
 \section{Rezultati}
 
-802.1x protokol uspešno omejuje dostop do omrežja. Prav tako port security uspesno nadzira število MAC naslovov na posamezen port in tako ščiti pred več napadi.
-\\*
-\\* \indent
-Nažalost protokolov nisva mogla testirat in uporabljat skupaj, ker firmware verzija na omrežnem stikalu tega ni dopuščala. 
+Bla bla.
 
 \clearpage
 \addcontentsline{toc}{section}{Viri}
 \begin{thebibliography}{9}
 
-\bibitem{ubuntubug}
-Prijavljen predlog izboljšave avtomatskega prepoznavanja 802.1x protokola na Ethernet-u, \url{https://bugs.launchpad.net/bugs/783560}, 21.05.2011
-
-\bibitem{yersenia}
-Navodila za uporabo yersenia paketa, \url{http://manpages.ubuntu.com/manpages/hardy/man8/yersinia.8.html}, 21.05.2011
-
-\bibitem{dsniff}
-Domača stran paketa dsniff, \url{http://monkey.org/~dugsong/dsniff/}, 21.05.2011
 
 \bibitem{eaptypes}
-Tabela \ref{eaptypes}, \url{http://www.wi-fiplanet.com/tutorials/article.php/3075481/Deploying-8021X-for-WLANs-EAP-Types.htm}, 21.05.2011
-
-\bibitem{mac_flooding}
-Slika \ref{mac_flooding}, \url{http://www.ciscozine.com/wp-content/uploads/mac_flooding_attack.png}, 21.05.2011
-
-\bibitem{vlan_hopping}
-Slika \ref{vlan_hopping}, \url{http://media.packetlife.net/media/blog/attachments/332/vlan_hopping_attack.png}, 21.05.2011
-
-\bibitem{mac_spoofing}
-Slika \ref{mac_spoofing}, \url{http://www.skapadmin.net/uploads/1/MAC_Spoofing.JPG}, 21.05.2011
-
-\bibitem{802.1x}
-Slika \ref{802.1x}, \url{http://upload.wikimedia.org/wikipedia/commons/1/1f/802.1X_wired_protocols.png}, 21.05.2011
-
-\bibitem{802.1x_exchange}
-Slika \ref{802.1x_exchange}, \url{http://www.cisco.com/en/US/i/100001-200000/100001-110000/101001-102000/101228.jpg}, 21.05.2011
-
-\bibitem{}
-Video posnetek predavanja na defcon, \url{https://media.defcon.org/dc-16/video/Defcon16-Figueroa-Figueroa-Williams-VLANs_Layer2_Attacks.m4v}, 21.05.2011
-
-\bibitem{}
-Specifična navodila za Cisco naprave za FreeRadius strežnik, \url{http://wiki.freeradius.org/Cisco}, 21.05.2011
-
-\bibitem{}
-Predstavitev napadov, \url{http://www.blackhat.com/presentations/bh-europe-05/BH_EU_05-Berrueta_Andres/BH_EU_05_Berrueta_Andres.pdf}, 21.05.2011
-
-\bibitem{}
-Navodila za Cisco Catalyst 2960, \url{http://www.cisco.com/en/US/docs/switches/lan/catalyst2960/software/release/12.2_46_se/configuration/guide/2960SCG.pdf}, 21.05.2011
-
-\bibitem{}
-Predstavitev layer 2 napadov, \url{http://www.cisco.com/warp/public/cc/so/cuso/epso/sqfr/sfblu_wp.pdf}, 21.05.2011
-
-\bibitem{}
-Predstavitev napadov, \url{http://www.iphelp.ru/faq/12/ch03lev1sec8.html}, 21.05.2011
-
-\bibitem{}
-Predstavitev napadov, \url{http://www.javvin.com/networksecurity/NetworkSecurity.html}, 21.05.2011
-
-\bibitem{}
-Predstavitev obrambnih mehanizmov layer 2, \url{http://www.sanog.org/resources/sanog7/yusuf-L2-attack-mitigation.pdf}, 21.05.2011
+Snort Manual, \url{http://manual.snort.org/}, 20.12.2012
 
 \end{thebibliography}
 \end{document}
+
+
+
