@@ -82,14 +82,56 @@ Delimo jih na dve glavni skupini:
 \subsubsection{NIDS}
 
 Sistemi, katerim je glavni vir podatkov za analizo izključno omrežje se imenujejo NIDS sistemi (network intrusion detection system).
+Kar pomeni, da opazujejo ves dohodni in izhodni promet, nato pa indentificira sumljive vzorce, ki bi lahko kazali na napad na omrezje ali nek sistem.
 
 Bralcu bo po vsej verjetnosti poznan program WireShark ali pa tcpdump.
 NIDS ponavadi delujejo podobno kot zgoraj omenjena programa. Program zajema vse paketke, ki jih vidi na omrežnem vmesniku,
 nato jih premerja s pravili v svoji bazi, sumljive pakete ali niz paketov pa zabeleži ali pa si ustrezno napiše informacije o njih.
 
-Sistemi se ponavadi zavedajo tudi prejšnih paketov, torej spremljajo transportni protokol.
+\paragraph{Komponente} % (fold)
+\label{par:Komponente}
+
+Sami NIDS sistemi so ponavadi razdeljeni na 2 dela:
+\begin{itemize}
+    \item - Senzor
+    \item - Nadzorni del
+\end{itemize}
+
+Senzorji so programi, ki zajemajo patetke na dolocenem delu omrezja jih analizirajo nato pa posljejo nadzornem delu.
+
+Taksna, delitev ima vec prednosti. Prva prednost je, da se dogodki/alarmi posiljajo naprej torej so reproducirani, tako je prakticno nemogoce za napadom pobrisati sledi.
+Hkrati lahko zajemamo vec omrezjij, ki so na razlicnih lokacijah brez, da bi promet preosmerili na centralno lokacijo.
+Oz. lahko dvignemo vec instanc (slovenski prevod primerek je neprimeren) senzorjev na enem samem strezniku, kar nam omogoca bolso uporabo racunskih virov na strezniku.
+To nam seveda otezi samo nastavitev (konfiguracijo) sistema, kar pomeni, da je taksna postavitev smiselna za vecja podjetja.
+
+% paragraph Komponente (end)
+
+\paragraph{Detekcija napadov} % (fold)
+\label{par:Detekcija napadov}
+
+Kako poteka sama detakcija napadov? 
+NIDS sistemi imajo vgrajeno bazo odtisov napadov. Ce je dogajanje na mrezi podobno, opisanem napadu v bazi
+bo NIDS sistem to napisal v dnevnik ali pa si celo shranil napad (v pcap datoteki). 
+NIDS sistemi so sumljicavi, glede velikosti, samega protokola in kolicine paketov.
+NIDS sistemi imajo vgrajene tudi logicne avtomate, torej se zavedajo tudi paketov pred nekim paketom in po njem.
+
+% paragraph Detekcija napadov (end)
+
+\paragraph{Lokacija v omrezju} % (fold)
+\label{par:Lokacija v omrezju}
+
+
+
+% paragraph Lokacija v omrezju (end)
+
+Tipicne sistemi v praksi so:
+- Snort (odprtokodni sistem)
+- Niksun NetDetector
 
 \subsubsection{HIDS}
+
+
+
 \subsubsection{IPS}
 \subsubsection{NIPS}
 \subsubsection{HIPS}
