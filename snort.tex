@@ -120,13 +120,74 @@ NIDS sistemi imajo vgrajene tudi logicne avtomate, torej se zavedajo tudi paketo
 \paragraph{Lokacija v omrezju} % (fold)
 \label{par:Lokacija v omrezju}
 
+NIDS sisteme lahko postavimo na vec delov v sistemu. Najbolj pogosto je za pozarnim zidom.
+Z tem zajemamo vse pakete, ki jih pozarni zid ni zavrgel. To nam sicer ne, da celotnega vplogleda v vse napade.
+Nam pa zmanjsa kolicino podatkov, ki jih moramo obdelati. Napadi , ki nam ne pridejo skozi pozarni zid naceloma niso nevarni.
 
+NIDS senzorje imamo lahko razdeljene tudi na razlicnih fizicnih lokacijah ali logicnih lokacijah, ker ni mogoce vse realizirati z enim senzorjem ali pa si to ne zelimo (zahtevana je separacija).
 
 % paragraph Lokacija v omrezju (end)
+
+\paragraph{Omejitve NIDS} % (fold)
+\label{par:Omejitve NIDS}
+
+Pomembna mejitev je pogostost laznih alarmov.
+Noben NIDS sistem ne more preprecit pojavljanje laznih alarmov.
+V vecino NIDS sistemom je mogoce dodati tudi vzorce laznih alarmov. 
+V bazo dodamo vzorec, ki nam sprozi alarm vendar NIDS sistem najde pravilo, da je to lazni alarm.
+
+
+Sestavljanje TCP toka podatkov (stream)/Sestavljanje IP paketkov (zaradi defregmentacije)
+
+Kot omenjeno kdaj analiziramo celotne TCP toke podatkov, da lahko zaznamo nevarnost. To pomeni, da moramo shranjevati paketke. 
+Pri napadih mnogokrat ne zaklucimo toka podatkov, kar pomeni, da se more pri shranjevanju tokov podatkov NIDS obnasati zelo specificno. Podobne probleme imamo tudi pri IP paketih. 
+Kot vemo imamo omejen polnilnik. Predstavljate si lahko koliko paketkov lahko shranimo na 10Gbit/s vmesniku.
+
+\paragraph{Stvari, ki jih moramo premisliti} % (fold)
+\label{par:Stvari, ki jih moramo premisliti}
+
+% paragraph Stvari, ki jih moramo premisliti (end)
+
+Pomemben je operaciski sistem. Ponavadi jo NIDS sistemi navoljo za vse sisteme,
+tako Windoes NT kot Unix ter ostale. Neki sistemi lahko tecejo na vec razlicnih, tako ni nic nenavadnega
+da imamo senzor na OpenBSD, managment pa na Windows NT sistemu.
+Pomembno je da sistemski administratorji poznajo platformo na kateri tece NIDS ali del njega, saj je pomembno, da je ta ustrezno zascitena.
+
+Podprti omrezni vmesniki
+Pomembno je da se zavedamo, da niso podprti vsi vmrezni vmesniki. Vecina sistemov podpira samo ethernet vmesnike.
+
+Alarmi
+Pomembno je da se odlocimo kaksne nacine obvescanja se bomo posluzili. Ponavadi so detekcije (alarmi) razdeljeni v razlicne tipe ali nivoje.
+Glede na katere dolocimo kanal obvescanja. 
+Nekatere napade lahko zgolj napisemo v dnevnik, za nekatere posljemo e-posto skrbniku ali operatorju v nekaterih primerih pa posljemo SMS.
+
+Pisanje dnevnikov in porocil
+Vsi NIDS sistemi pisejo alarme v dnevnike, torej lahko za nazaj pogledamo, kaj se je dogajalo. Doloceni sistemi pa omogocaje tudi posiljanje avtomatsko generiranih porocil (npr. dnevnih).
+
+Vzdrzevanje
+Pomemben segment je tudi vzdrzevanje. Vprasanja glede tega so ali sem nam baza odtisov, sama posodablja ali pa jo moramo avtomatsko, kako se posodablja jedro. Moramo za posodobitve baze placevati. Koliko stane licenca?
+Imamo vec alternativnih virov odtisov. Je okoli odtisov v bazi zbrana skupnost ali pa celo akademsko okolje.
+Koliko fleksibilni so ti mehanizmi. Koliko pogosto moramo posadabljati. 
+Stvar zavisi od nasih izkusenj in od izbranega sistema. Ni pa enolicnega odgovora za taksna vprasanja.
+
+Izgled nadzornega dela
+Pomemben je izgled nazornega dela. Ali je nadzorni del prijazen in ga hitro razumemo.
+Nadzorni deli niso namenjeni konfiguraciji ampak predvsem prikazu alarmov, a lahko kjub temu omogocajo preproste nastavitve.
+Vecina komercialnih sistemov nam ponuja graficne vmesnike. Realizirane za razlicne platforme ali pa kar spletni vmesnik.
+Doloceni sistemi nam dajo na razpolago programerski vmesnik (API), nato pa vzamemo drug projekt za prikaz rezultatov.
+
+Skalaribilnost
+Skalaribilnost je pomemben aspekt, ce nacrtujemo sistem za omrezja, ki so velika ali pa se bodo razsirila. 
+pri tej tocki, nas zanima ali NIDS sistem izkorisca vse procesorje na strezniku oz. kako to doseci ali lahko paktetke posiljamo naprej. Drugim racunalnikom in tako dosezemo neko kolektivno intelegenco.
+Koliko paketkov lahko realno zajamemo in obdelamo, preden jih zacnemo spuscati (ne analizirati).
+
+
+% paragraph Omejitve NIDS (end)
 
 Tipicne sistemi v praksi so:
 - Snort (odprtokodni sistem)
 - Niksun NetDetector
+- ISS RealSecurea
 
 \subsubsection{HIDS}
 
