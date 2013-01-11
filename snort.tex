@@ -76,7 +76,6 @@ Delimo jih na dve glavni skupini:
 
 % subsubsection IDS (end)
 
-
 \subsection{NIDS}
 
 Sistemi, katerim je glavni vir podatkov za analizo izključno omrežje se imenujejo NIDS sistemi (network intrusion detection system).
@@ -536,6 +535,22 @@ Torej izklopijo uporabnika za časovno obdobje napada, nato pa ga spet vklopijo.
 \section{Praktični del}
 
 \subsection{Nameščanje programske opreme Snort}
+
+$ aptitude install snort-pgsql snort-common-libraries snort-rules
+
+# nastavis interface, ip range, bazo
+
+cd /usr/share/doc/snort-pgsql
+zcat create_postgresql.gz | psql -U snort snort
+
+rm /etc/snort/db-pending-config
+/etc/init.d/snort start
+
+aptitude install git-core suricata ruby1.9.2 rails imagemagick wkhtmltopdf rubygems1.9.2 libxml2-dev libxslt-dev g++
+gem install bundler
+sed -i 's/mysql/d' Gemfile
+bundle install
+
 \subsection{Zmožnosti Snort programja}
 \subsection{Spletni vmesnik za Snort}
 \subsection{Praktični primeri napadov}
@@ -591,4 +606,4 @@ Slika \ref{cisco_img},
 \end{document}
 
 
-
+- omeni, da v praksi kupis paket rulov, in to je to
