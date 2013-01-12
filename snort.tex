@@ -47,19 +47,12 @@ varne aplikacije, tuneliranje prometa, up-to-date strežniki), ne smemo biti pre
 Naj bralca opozorimo tudi na dejstvo, da `nepravilno' konfiguriran IDS ali IPS sistemi lahko globoko posežejo
 tudi v zasebnost posameznika, kar ni v skladu z ustavo Republike Slovenije in drugimi pravnimi akti.
 IDS in IPS sistemi se lahko uporabljajo tudi kot DPI (deep packet inspection) sistemi, kar pomeni, da ne gledamo
-samo glav paketnih protokolov ampak tudi aplikacijski nivo (aplikacijski protokol oz. vsebino), 
+samo glav paketnih protokolov ampak tudi aplikacijski nivo (aplikacijski protokol oz.\ vsebino), 
 zato nastavljajmo IDS in IPS sisteme odgovorno, podatke pa shranjujmo z največjo skrbjo.
 
 \section{Teoretični del}
 
 
-\begin{figure}[htb]
-\begin{center}
-\includegraphics[scale=0.8]{mac_flooding_attack.png}
-\end{center}
-\caption{MAC flooding napad}
-\label{mac_flooding}
-\end{figure}
 
 \subsubsection{IDS} % (fold)
 \label{ssub:IDS}
@@ -95,6 +88,14 @@ nato jih premerja s pravili v svoji bazi, sumljive pakete ali niz paketov pa zab
 
 \subsubsection{Komponente} % (fold)
 
+\begin{figure}[htb]
+\begin{center}
+\includegraphics[scale=0.5]{komponente.png}
+\end{center}
+\caption{Primer postavitev komponent}
+\label{komponente}
+\end{figure}
+
 Sami NIDS sistemi so ponavadi razdeljeni na 2 dela:
 \begin{itemize}
     \item Senzor
@@ -105,7 +106,7 @@ Senzorji so programi, ki zajemajo paketke na določenem delu omrežja jih analiz
 \\*
 Takšna delitev ima več prednosti. Prva prednost je, da se dogodki/alarmi počiljajo naprej torej so reproducirani, tako je praktišno nemogoce za napadom pobrisati sledi.
 Hkrati lahko zajemamo več omrežjij, ki so na različnih lokacijah brez, da bi promet preosmerili na centralno lokacijo.
-Oz. lahko dvignemo več instanc (slovenski prevod primerek je neprimeren) senzorjev na enem samem strežniku, kar nam omogoča bolšo uporabo računskih virov na strežniku.
+Oz.\ lahko dvignemo več instanc (slovenski prevod primerek je neprimeren) senzorjev na enem samem strežniku, kar nam omogoča bolšo uporabo računskih virov na strežniku.
 To nam seveda oteži samo nastavitev (konfiguracijo) sistema, kar pomeni, da je takšna postavitev smiselna za večja podjetja.
 
 %  Komponente (end)
@@ -121,6 +122,14 @@ NIDS sistemi imajo vgrajene tudi logične avtomate, torej se zavedajo tudi paket
 %  Detekcija napadov (end)
 
 \subsubsection{Lokacija v omrežju} % (fold)
+
+\begin{figure}[htb]
+\begin{center}
+\includegraphics[scale=0.5]{pozicija.png}
+\end{center}
+\caption{Primer dveh lokacij senzorjev: Senzor A pred požarnim zidom in senzor B za njim}
+\label{pozicija}
+\end{figure}
 
 NIDS sisteme lahko postavimo na več delov v sistemu. Najbolj pogosto je za požarnim zidom.
 Z tem zajemamo vse pakete, ki jih požarni zid ni zavrgel. To nam sicer ne, da celotnega uplogleda v vse napade.
@@ -177,7 +186,7 @@ Nekatere napade lahko zgolj napišemo v dnevnik, za nekatere pošljemo e-posto s
 
 \paragraph{Pisanje dnevnikov in poročil} % (fold)
 
-Vsi NIDS sistemi pišejo alarme v dnevnike, torej lahko za nazaj pogledamo, kaj se je dogajalo. Določeni sistemi pa omogočajo tudi pošiljanje avtomatsko generiranih porocil (npr. dnevnih).
+Vsi NIDS sistemi pišejo alarme v dnevnike, torej lahko za nazaj pogledamo, kaj se je dogajalo. Določeni sistemi pa omogočajo tudi pošiljanje avtomatsko generiranih porocil (npr.\ dnevnih).
 % paragraph Pisanje dnevnikov in porocil (end)
 
 \paragraph{Vzdrževanje} % (fold)
@@ -202,7 +211,7 @@ Določeni sistemi nam dajo na razpolago programerski vmesnik (API), nato pa vzam
 \paragraph{Skalabilnost} % (fold)
 
 Skalabilnost je pomemben aspekt, če nacrtujemo sistem za omrežja, ki so velika ali pa se bodo razširila. 
-V tej točki, nas zanima ali NIDS sistem izkorišča vse procesorje na strežniku oz. kako to doseči ali lahko paktetke pošiljamo naprej. Drugim računalnikom in tako dosežemo neko kolektivno intelegenco.
+V tej točki, nas zanima ali NIDS sistem izkorišča vse procesorje na strežniku oz.\ kako to doseči ali lahko paktetke pošiljamo naprej. Drugim računalnikom in tako dosežemo neko kolektivno intelegenco.
 Koliko paketkov lahko realno zajamemo in obdelamo, preden jih začnemo spuščati (ne analizirati).
 % paragraph Skalabilnost (end)
 
@@ -215,9 +224,9 @@ NIPS je sistem za preprečevanje napadov, ki glede na alarme NIDS vgrajenega sis
 
 Bralca naj te termini ne zmedejo saj se jih ne uporablja strikno. Korak od IDS do IPS sistema je zelo majhen zato se veliko IDS sistemov deklarira kot IPS.
 
-\subsubsection{Nacini preprecevanja} % (fold)
+\subsubsection{Načini preprečevanja} % (fold)
 
-\paragraph{Spreminjanje pravil v pozarnem zidu} % (fold)
+\paragraph{Spreminjanje pravil v požarnem zidu} % (fold)
 
 Najbolj pogosto NIPS sistemi spreminjajo pravila požarnega zidu.
 Če je NIPS sistem vgrajen v požarni zid potem je to sila preprosto.
@@ -262,12 +271,35 @@ Naj omenimo najbolj pogosta:
 \paragraph{Snort} % (fold)
 \label{par:Snort}
 
-A lot of stuff.
+\begin{figure}[htb]
+\begin{center}
+\includegraphics[scale=0.8]{Snort_ids_logo.png}
+\end{center}
+\caption{Snort}
+\label{snort_img}
+\end{figure}
+
+Snort\cite{snort} je odprtokodni NIDS/NIPS sistem, ki ga razvija podjetje Sourcefire\cite{sourcefire} z svojimi 560 zaposlenimi.
+Prvotno je leta 1998 sistem Snort napisal Martin Roesch, ki je sedaj tehnični direktor podjetja. 
+Snort je čez leta postajal čedalje bolj pomemben v informacijski industriji, uspeh pa je zgled za celotno odprtokodno skupnost.
+\\*
+Snort je izdan pod GPL licenco, napisan je v C programskem jeziku ter deluje na več operacijskih sistemih.
+\\*
+Snort ima močno komercialno podporo. Glavna njihova storitev je ponudba pravil za snort konfiguracijo.
 
 % paragraph Snort (end)
 
 \paragraph{Cisco} % (fold)
 \label{par:Cisco}
+
+
+\begin{figure}[htb]
+\begin{center}
+\includegraphics[scale=0.7]{cisco_logo.png}
+\end{center}
+\caption{Cisco}
+\label{cisco_img}
+\end{figure}
 
 Cisco ponuja te sisteme v ASA seriji 5000\cite{cisco5000}, kot je razvidno na njihovi strani.
 Najbolj zmogljivi sistem lahko obdela 400Mbit/s podatkov, to pomeni z hkratnim delovanjem tako požarnega zidu, kot IPS sistema. 
@@ -295,13 +327,13 @@ Primarno, ker gre za drug nivo zaznave in preprečevanja.
 \subsubsection{Omejitve HIDS} % (fold)
 
 Glavni problem HIDS sistemov je, da so tesno povezani z platformo na kateri delujejo 
-oz. sam operacijski sistem.
+oz.\ sam operacijski sistem.
 Kot prej omenjeno moramo imeti na vsaki napravi nameščenega agenta. Ta agent ponavadi vedno pošilja vse podatke naprej nadzornemu sistemu.
 Nikoli se ne zanašamo, da je sistem pod našim nadzorom in v njega se ni bilo vdrto.
 
 % subsubsection Omejitve HIDS (end)
 
-\subsubsection{Nacini zaznav napadov} % (fold)
+\subsubsection{Načini zaznav napadov} % (fold)
 
 \paragraph{Poslušanje omrežnega vmesnika} % (fold)
 
@@ -314,19 +346,25 @@ Podobno kot to dela NIDS, kar smo opisovali v prejšnih poglavjih.
 
 Na predavanjih smo obravnavali tako imenovane zgoscevalne funkcije.
 
-XXX SLIKA
+\begin{figure}[htb]
+\begin{center}
+\includegraphics[scale=0.5]{checksum.png}
+\end{center}
+\caption{Graficna podoba kako deluje zgoščevalna funkcija}
+\label{checksum_img}
+\end{figure}
 
-Te funkcije se uporabljajo tudi pri IPv4 paketih in drugje (za izračun kontrolne vsote). Funkciji podamo podatke ona pa vrne kluč oz. rezultat.
+Te funkcije se uporabljajo tudi pri IPv4 paketih in drugje (za izračun kontrolne vsote). Funkciji podamo podatke ona pa vrne kluč oz.\ rezultat.
 Pomembno je, da se zavedamo, da se pri tem izgubi informacija podatka, ki smo ga ustavili v zgoščevalno funkcijo.
 Pri kriptoloških zgoščevalnih funkcijah je težko izračunati poljuben podatek, če poznamo kluč.
 \\*
 V UNIX operacijskih sistemih HIDS sistemi naredijo kontrolno vsoto večino datotek v /etc mapi. V /etc mapi se nahajajo konfiguracije pomembnih storitev, ki jih taka naprava/gostitelj ponuja.
-Kontrolne vsote pošlje naprej nadzornemu sistemu. To naredi vsakič, ko se datoteka spremeni, ce datotečni sistem to podpira oz. kronološko.
+Kontrolne vsote pošlje naprej nadzornemu sistemu. To naredi vsakič, ko se datoteka spremeni, ce datotečni sistem to podpira oz.\ kronološko.
 \\*
 Nadzorni sistem primerja prejšno vrednost z novo, če se ne ujemata uporabnika o tem obvesti.
 \\*
 Uporabnik nato presodi ali je to pričakovano (če je prislo do rekonfiguracije) ali pa je napadalec, ki je vdrl v sistem spremenil te datoteke.
-Zato seveda uporabljano SHA1 funkcijo, ki je kriptografsko varna, kar pomeni da napadalec ne more ustvariti datoteke, ki bi imela isti kluč. Kar se pri MD5 seveda da narediti zelo poceni (oblacne storitve).
+Zato seveda uporabljano SHA1 funkcijo, ki je kriptografsko varna, kar pomeni da napadalec ne more ustvariti datoteke, ki bi imela isti kluč. Kar se pri MD5 seveda da narediti zelo poceni (oblačne storitve).
 \\*
 
 To nam pride se kako prav pri sistemih/gostiteljih, kjer posegi v konfiguracijo niso pogosti.
@@ -367,7 +405,8 @@ New sha1sum is : 'd80551f82582f2758cc2c22ffc15428f0399ba49'
 \paragraph{Spremljanje dnevnikov} % (fold)
 
 HIDS sistemi spremljajo dnevnike (logs). Tukaj ponavadi zaznajo največ poskusov napadov.
-Gledajo posamezne storitve, ki so potrebne za dostop do sistema/gostitelja. Opazujejo Telnet in SSH.
+Gledajo posamezne storitve, ki so potrebne za dostop do sistema/gostitelja.
+Opazujejo Telnet in ssh.
 Ali so poskusi prijav skozi te sisteme uspešni ali pa niso.
 Tako lahko detektirajo različne napade tako napade z pomočjo grobe sile (bruteforce) in z pomočjo slovarjev (dictionary) napade.
 V kolikor se v določenem časovni periodi uporabnik prevečkrat zmoti, nas sistem o tem obvesti.
@@ -438,10 +477,10 @@ Detekcija teh je kompleksen proces zato se v detaile nebi spuščali.
 
 Podobno kot pri NIPS sistemih je mogoce tudi pri alarmih HIDS sistemov narediti ustrezne akcije.
 
-\subsubsection{Nacini preprecevanja napadov} % (fold)
+\subsubsection{Načini preprečevanja napadov} % (fold)
 
 
-\paragraph{Spreminjanje lokalnega pozarnega zidu} % (fold)
+\paragraph{Spreminjanje lokalnega požarnega zidu} % (fold)
 
 Možno je spreminjanje pravil na lokalnem požarnem zidu (samega gostitelja).
 Podobno kot pri NIPS sistemih.
@@ -504,6 +543,12 @@ Cisco ASA 5000 serije, \url{http://www.cisco.com/en/US/products/ps6120/prod_mode
 
 \bibitem{aide}
 AIDE, \url{http://aide.sourceforge.net/}, 27.12.2012
+
+\bibitem{sourcefire}
+SourceFire, \url{http://en.wikipedia.org/wiki/Sourcefire,_Inc}, 27.12.2012
+
+\bibitem{snort}
+Snort, \url{http://www.snort.org/}, 27.12.2012
 
 \end{thebibliography}
 \end{document}
