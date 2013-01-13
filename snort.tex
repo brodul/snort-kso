@@ -283,9 +283,23 @@ Snort\cite{snort} je odprtokodni NIDS/NIPS sistem, ki ga razvija podjetje Source
 Prvotno je leta 1998 sistem Snort napisal Martin Roesch, ki je sedaj tehnični direktor podjetja. 
 Snort je čez leta postajal čedalje bolj pomemben v informacijski industriji, uspeh pa je zgled za celotno odprtokodno skupnost.
 \\*
+
 Snort je izdan pod GPL licenco, napisan je v C programskem jeziku ter deluje na več operacijskih sistemih.
 \\*
+
 Snort ima močno komercialno podporo. Glavna njihova storitev je ponudba pravil za snort konfiguracijo.
+\\*
+
+Ponavadi ga namestimo na GNU/linux sistem. Pri tem je lahko strojna oprema poljubnih proizvajalcev, se pozna če imamo PCI-X režo za omrežni vmesnik.
+Strežnik ima lahko več jeder za obdelavo podatkov. Snort je mogoče poganjati samo na enem jedru, vendar lahko procesi med sabo dobro komunicirajo (clustering), saj je snort narejen z mislijo obdelave veliko podatkov.
+Za neko srednje podjetje se priporoča strežnik, ki ima dva omrežna vmesnika ter 4 jedra ali več.
+\\*
+
+Dva omrežna vmesnika sta nujna saj na enem zajemamo promet, na drugem shranjujemo paketke na NAS, izvajamo IPS akcije/sankcije ter nadzorujemo sistem. Taksnih postavitev smo navadno vajeni pri omrežnih elementih, kjer imamo za nadzor ločene komunikacijske kanale.
+\\*
+
+OISF\cite{oisf} je začel razvijati novo implementacijo, ki uporablja Snort pravila imenuje se Suricata.
+Glavne prednost je da lahko uporaljablja več jeder ter privzeto podpira IPv6.
 
 % paragraph Snort (end)
 
@@ -549,6 +563,9 @@ SourceFire, \url{http://en.wikipedia.org/wiki/Sourcefire,_Inc}, 27.12.2012
 
 \bibitem{snort}
 Snort, \url{http://www.snort.org/}, 27.12.2012
+
+\bibitem{oisf}
+OISF, \url{https://www.openinfosecfoundation.org/}, 27.12.2012
 
 \end{thebibliography}
 \end{document}
