@@ -104,7 +104,7 @@ Sami NIDS sistemi so ponavadi razdeljeni na 2 dela:
 Senzorji so programi, ki zajemajo paketke na določenem delu omrežja jih analizirajo nato pa pošljejo nadzornem delu.
 \\*
 Takšna delitev ima več prednosti. Prva prednost je, da se dogodki/alarmi počiljajo naprej torej so reproducirani, tako je praktišno nemogoce za napadom pobrisati sledi.
-Hkrati lahko zajemamo več omrežjij, ki so na različnih lokacijah brez, da bi promet preosmerili na centralno lokacijo.
+Hkrati lahko zajemamo več omrežij, ki so na različnih lokacijah, brez, da bi promet preosmerili na centralno lokacijo.
 Oz.\ lahko dvignemo več instanc (slovenski prevod primerek je neprimeren) senzorjev na enem samem strežniku, kar nam omogoča bolšo uporabo računskih virov na strežniku.
 To nam seveda oteži samo nastavitev (konfiguracijo) sistema, kar pomeni, da je takšna postavitev smiselna za večja podjetja.
 
@@ -190,7 +190,8 @@ Vsi NIDS sistemi pišejo alarme v dnevnike, torej lahko za nazaj pogledamo, kaj 
 
 \paragraph{Vzdrževanje} % (fold)
 
-Pomemben segment je tudi vzdrževanje. Vprašanja glede tega so. Ali sem nam baza odtisov, sama posodablja ali pa jo moramo avtomatsko posodobiti? Kako se posodablja jedro? Moramo za posodobitve baze plačevati. Koliko stane licenca?
+Pomemben segment je tudi vzdrževanje. Vprašanja glede tega so. Ali se nam baza odtisov, sama posodablja ali
+pa jo moramo avtomatsko posodobiti? Kako se posodablja jedro? Moramo za posodobitve baze plačevati. Koliko stane licenca?
 Imamo več alternativnih virov odtisov? Je okoli odtisov v bazi zbrana skupnost ali pa celo akademsko okolje.
 Koliko fleksibilni so ti mehanizmi. Koliko pogosto moramo posadabljati. 
 Stvar zavisi od naših izkušenj in od izbranega sistema. Ni pa enoličnega odgovora za takšna vprašanja.
@@ -278,15 +279,15 @@ Naj omenimo najbolj pogosta:
 \label{snort_img}
 \end{figure}
 
-Snort\cite{snort} je odprtokodni NIDS/NIPS sistem, ki ga razvija podjetje Sourcefire\cite{sourcefire} z svojimi 560 zaposlenimi.
+Snort\cite{snort} je odprtokodni NIDS/NIPS sistem, ki ga razvija podjetje Sourcefire\cite{sourcefire} s svojimi 560 zaposlenimi.
 Prvotno je leta 1998 sistem Snort napisal Martin Roesch, ki je sedaj tehnični direktor podjetja. 
 Snort je čez leta postajal čedalje bolj pomemben v informacijski industriji, uspeh pa je zgled za celotno odprtokodno skupnost.
 \\*
 
-Snort je izdan pod GPL licenco, napisan je v C programskem jeziku ter deluje na več operacijskih sistemih.
+Snort je izdan pod GPL licenco, napisan je v C programskem jeziku ter deluje na različnih operacijskih sistemih.
 \\*
 
-Snort ima močno komercialno podporo. Glavna njihova storitev je ponudba pravil za snort konfiguracijo.
+Snort ima močno komercialno podporo. Glavna storitev je ponudba pravil za snort konfiguracijo.
 \\*
 
 Ponavadi ga namestimo na GNU/linux sistem. Pri tem je lahko strojna oprema poljubnih proizvajalcev, se pozna če imamo PCI-X režo za omrežni vmesnik.
@@ -534,30 +535,198 @@ Torej izklopijo uporabnika za časovno obdobje napada, nato pa ga spet vklopijo.
 
 \section{Praktični del}
 
+Kot dober primer orodja za izvajanje NIDS ter NIPS se v industriji pogosto uporablja Snort. Naziv
+"The de facto standard for intrusion detection/prevention" povzame njegovo široko uporabo v industriji.
+
+
 \subsection{Nameščanje programske opreme Snort}
 
-$ aptitude install snort-pgsql snort-common-libraries snort-rules
+Snort sva namestila na Gentoo Linux distribuciji z naslednjim ukazom:
 
-# nastavis interface, ip range, bazo
+\begin{verbatim}
+ $ emerge -av snort
+\end{verbatim}
 
-cd /usr/share/doc/snort-pgsql
-zcat create_postgresql.gz | psql -U snort snort
+Gentoo ponuja ogromno opcij za konfiguracijo Snort-a, najpomembnejše so:
 
-rm /etc/snort/db-pending-config
-/etc/init.d/snort start
+\begin{itemize}
+    \item perfprofilling - Omogoči širok nabor zbiranja statistik o delovanju Snort-a
+    \item paf - Omogoči "Protocol Aware Flushing", sledenje kompletnemu toku paketkov v komunikaciji
+    \item active-response - Omogoči odgovarjanje (ICMP, TCP) na prekinjene povezave
+    \item decoder-preprocessor-rules - Omogoči akcije (alert, drop, pass, etc) za dekoder in preprocesor
+    \item react - Omogoči poslušanje, prekinitev ter preusmeritev HTTP prometa
+    \item inline-init-failopen - Prepreči, da bi promet šel skozi Snort, preden je pripravljen na delovanje
+\end{itemize}
 
-aptitude install git-core suricata ruby1.9.2 rails imagemagick wkhtmltopdf rubygems1.9.2 libxml2-dev libxslt-dev g++
-gem install bundler
-sed -i 's/mysql/d' Gemfile
-bundle install
+V najinem primeru sva ohranila privzete nastavitve. Nato sva pognala Snort z naslednjim ukazom:
 
-\subsection{Zmožnosti Snort programja}
+\begin{verbatim}
+ $ /etc/init.d/snort start
+ * Starting snort ...
+\end{verbatim}
+
+Preverimo, če Snort res deluje:
+
+\begin{verbatim}
+ $ ps aux | grep snort
+ snort    18627  1.5  9.8 621928 178984 ?       Ssl  19:49   0:00 /usr/bin/snort --nolock-pidfile --pid-path /var/run/snort -D -i eth0 -c /etc/snort/snort.conf
+\end{verbatim}
+
+
+\subsection{Zmožnosti ter konfiguracija}
+
+Snort lahko deluje v treh načinih:
+
+\begin{itemize}
+    \item "Sniffer mode" - prikazuje pakete (ter njihovo vsebino) v konzoli
+    \item "Packet logger mode" - zapisuje pakete (ter njihovo vsebino) v neko bazo
+    \item "NIDS mode" - izvaja analize za detekcijo nepravilnosti in sankcije na podlagi ugotovitev
+\end{itemize}
+
+Pri tem je vredno opozoriti, da glede na količino prometa je pomembno premisliti kolikšno
+količino podatkov Snort zmora premleti ter zmožnosti baze podatkov, kamor se shranjujejo.
+
+Snort je sestavljen iz naslednjih kompontent, ki skrbijo vsaka za svoj del pri celotnem procesu obdelave paketov: 
+
+\begin{itemize}
+    \item Decoder - Dekodira pakete v Snort-u razumljiv format
+    \item Preprocessor - Napredna pravila, ki pripravijo paketke ali/in sprožijo obvestilo
+    \item Detection engine - Jedro Snort-a, ki požene vsa pravila čez razdelan paket
+    \item Thresholding - Obdela vsa obvestila in se odloči, ali jih pošlje glede na število in druge parametre
+    \item Output modules - Načini obveščanja o zaznanih problemih
+\end{itemize}
+
+Komponente so med seboj povezane približno tako:
+
+\begin{figure}[htb]
+\begin{center}
+\includegraphics[scale=0.5]{snort_components.png}
+\end{center}
+\caption{Snort komponente}
+\label{snortcompontents}
+\end{figure}
+
+
+Snort zna poročati o zaznanih nepravilnostih na naslednje načine:
+
+\begin{itemize}
+    \item syslog - Obvestila preda naprej programu Syslog
+    \item full - Pakete prikaže vključno z glavami paketov
+    \item tcpdump - Pakete zapiše v .pcap format
+    \item unixsock - Obvestila pošlje v Unix Socket
+    \item csv - Obvestila zapiše v CSV formatu
+    \item null - Obvestila zavrže
+\end{itemize}
+
+Izbrala sva prvo opcijo - Syslog:
+
+\begin{verbatim}
+output alert_syslog: LOG_AUTH LOG_ALERT
+\end{verbatim}
+
+Vsa sporočila sva prebrala z naslednjim ukazom
+
+\begin{verbatim}
+  $ tail -n 50 /var/log/messages | snort
+\end{verbatim}
+
+Snort podpira tudi klasifikacijo obvestil v različne kategorije, kar počne že po privzetih nastavitvah.
+Klasifikacija je uporabna za informacijo koliko resen napad se izvaja in za kakšno vrsto gre.
+
+
 \subsection{Spletni vmesnik za Snort}
-\subsection{Praktični primeri napadov}
+
+Spletnega vmesnika sama nisva postavljala, saj gre samo za predstavitev podatkov na drug način.
+\\*
+
+Zato sva raje preverila uporabnost Snorby spletnega vmesnika napisanega v ruby kar preko demo strani na
+http://demo.snorby.org/ z uporabniškim imenom demo@snorby.org in geslom snorby.
+\\*
+
+Prva stran vmesnika jasno prikazuje agragiranje podatke v smiselnih grafih:
+
+\begin{figure}[htb]
+\begin{center}
+\includegraphics[scale=0.3]{snorby.png}
+\end{center}
+\caption{Snorby dashboard}
+\label{snorby}
+\end{figure}
+
+Snorby vsebuje tipične spletne bonitete kot so berljiva poročila obvestil,
+klasifikacija ter filtriranje obvestil v vmesniku, itd.
+\\*
+
+Uporaba spletnega vmesnika je predvsem zanimiva za hiter pregled nad stanjem omrežja.
+
+\subsection{Primeri zaznavanja anomalij v omrežju}
+
+\subsubsection{Zaznavanje Port Scanninga} % (fold)
+
+Port Scanning je širok pojem, zato bomo v tem primeru lovili primer, ko napadalec uporabi orodje NMap
+in ga uporabi samo dotični tarči ter pregleda celotni nabor vrat.
+
+\\*
+V konfiguracijsko datoteko /etc/snort/snort.conf vpišemo naslednji preprocessor:
+
+\begin{verbatim}
+preprocessor sfportscan: proto  { all } memcap { 10000000 } sense_level { low }
+\end{verbatim}
+
+Snort zazna dogodek in javi:
+
+\begin{verbatim}
+Jan 03 18:03:56 ananas snort[1815]: [122:1:1] PSNG_TCP_PORTSCAN [Classification: Attempted Information Leak] [Priority: 2] {PROTO:255} 10.2.1.1 -> 10.2.1.2
+\end{verbatim}
+
+% subsubsection Zaznavanje Port scanninga (end)
+
+\subsubsection{Zaznavanje nepravilnosti v HTTP prometu} % (fold)
+
+Privzeto je Snort HTTP preprocessor vkljopljen in obvešča o vseh dogodkih, ki se po RFC HTTP standardu ne bi smele zgoditi v praksi.
+\\*
+
+Na primer naslednje gre za primer HTTP requesta, ki ne vsebuje glav "CONTENT-LENGTH" ali "TRANSFER-ENCODING". Uporabno orodje za nadzor
+nad HTTP prometom in pravilnim delovanjem samega protokola.
+
+\begin{verbatim}
+Jan 03 18:37:47 ananas snort[11129]: [120:3:1] (http_inspect) NO CONTENT-LENGTH OR TRANSFER-ENCODING IN HTTP RESPONSE [Classification: Unknown Traffic] [Priority: 3] {TCP} 94.242.250.116:80 -> 10.2.1.2:54913
+\end{verbatim}
+
+% subsubsection Zaznavanje Port scanning-a (end)
+
+\subsubsection{Zaznavanje ARP Spoofinga} % (fold)
+
+V konfiguracijsko datoteko /etc/snort/snort.conf vpišemo naslednji preprocessor:
+
+\begin{verbatim}
+preprocessor arpspoof
+preprocessor arpspoof_detect_host: 10.2.1.3 00:aa:bb:cc:dd:ee
+\end{verbatim}
+
+Ko ponovno zaženemo Snort in izvedemo "ARP Spoofing" napad na povezovalnem omrežnem nivoju, javi naslednjo obvestilo:
+
+\begin{verbatim}
+Jan 04 12:33:23 ananas snort[11129]: [112:4:1] (spp_arpspoof) Attempted ARP cache overwrite attack [**]
+\end{verbatim}
+
+Tako lahko uspešno ulovimo vse nepridiprave, ki se igrajo z varnostjo našega omrežja.
+
+% subsubsection Zaznavanje ARP Spoofinga (end)
+
 
 \section{Rezultati}
 
-Bla bla.
+Na podlagi podanih informacij, eksperimentov ter gradiva, ki sva ga predelala, lahko vidimo, da postavitev
+sistemov za preprečevanje napadov predstavlja izziv od varovanjem zasebnosti do pisanjem pravil za preprečevanje napadov.
+\\*
+
+V praksi podjetja kupijo pakete pravil kar od podjetij kot je Sourcefire (na http://www.snort.org/snort-rules/)
+in tako "outsourcajo" problem podjetjem, ki se ukvarjajo izključno s takšnimi problematikami. 
+\\*
+
+Kljub temu je vredno poudariti, da je Snort samo orodje in šele pravilna konfiguracija lahko pripelje do pozitivnih
+učinkov, pa še to ne pri vseh primerih.
 
 \clearpage
 \addcontentsline{toc}{section}{Viri}
@@ -566,6 +735,12 @@ Bla bla.
 
 \bibitem{eaptypes}
 Snort Manual, \url{http://manual.snort.org/}, 20.12.2012
+
+\bibitem{snortcompontents}
+Slika \ref{snortcompontents}, \url{http://seclists.org/snort/2012/q3/att-894/image.png}, 06.01.2012
+
+\bibitem{snorby}
+Slika \ref{snorby}, \url{https://forrst-production.s3.amazonaws.com/posts/snaps/109759/original.png}, 06.01.2012
 
 \bibitem{cisco5000}
 Cisco ASA 5000 serije, \url{http://www.cisco.com/en/US/products/ps6120/prod_models_comparison.html}, 27.12.2012
@@ -604,6 +779,3 @@ Slika \ref{cisco_img},
 
 \end{thebibliography}
 \end{document}
-
-
-- omeni, da v praksi kupis paket rulov, in to je to
